@@ -76,14 +76,52 @@ RSpec.describe "customer show page" do
         expect(page).to have_content("$#{@lettuce.price}")
       end
     end
+
+    it "I see a form to add an item to this customer" do
+      visit "customers/#{@ashley.id}"
+      # save_and_open_page
+      expect(page).to have_field(:customer_item_name)
+      expect(page).to have_field(:customer_item_price)
+      expect(page).to have_field(:customer_item_store_name)
+    end
+
+    it "When I fill out the form, and click submit, I am redirected
+        to the customer's show page with the new item listed under
+        the customers items" do
+      visit "customers/#{@ashley.id}"
+      fill_in :customer_item_name, with: "Bacon"
+      fill_in :customer_item_price, with: "8"
+      fill_in :customer_item_store_name, with: "King Soopers"
+      click_on "Add Item"
+      save_and_open_page
+
+      expect(current_path).to eq("/customers/#{@ashley.id}")
+
+      expect(page).to have_content("King Soopers")
+      expect(page).to have_content("Bacon")
+      expect(page).to have_content("8")
+
+    end
   end
 end
+
+# As a visitor,
+# When I visit a customer's show page,
+# Then I see a form to add an item to this customer.
+# When I fill in a field with the id of an existing item,
+# And I click submit,
+# Then I am redirected back to the customer's show page, 
+# And I see the item now listed under this customer's items.
+# (You do not have to test for a sad path, for example if the ID submitted is not an existing item)
+
+
+
 
 # Story 1
 
 # As a visitor, 
 # When I visit a customer show page,
 # I see the customer's name,
-# And I see its a list of its items
-# including the item's name, price,
+# # And I see its a list of its items
+# # including the item's name, price,
 # and the name of the supermarket that it belongs to.
